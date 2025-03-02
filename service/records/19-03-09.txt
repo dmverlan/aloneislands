@@ -1,0 +1,52 @@
+
+	<table border="0" width="600" id="table1" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		побед</span></td>
+		<td align="center" class="items">8323</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Фиалка')" style=cursor:hand> </td><td> <img src=images/signs/c40.gif><font class=user onclick="javascript:top.say_private('Фиалка')"> Фиалка</font></td><td>[<font class=lvl>21</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Фиалка','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		поражений</span></td>
+		<td align="center" class="items">2633</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Чужая скво')" style=cursor:hand> </td><td> <img src=images/signs/none.gif><font class=user onclick="javascript:top.say_private('Чужая скво')"> Чужая скво</font></td><td>[<font class=lvl>17</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Чужая скво','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		умений &quot;Охота&quot;</span></td>
+		<td align="center" class="items">1000000</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('sL')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('sL')"> sL</font></td><td>[<font class=lvl>9</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=sL','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		Игровой Валюты</span></td>
+		<td align="center" class="items">696041.74</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Jedi_VIN')" style=cursor:hand> </td><td> <img src=images/signs/spa.gif><font class=user onclick="javascript:top.say_private('Jedi_VIN')"> Jedi_VIN</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Jedi_VIN','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		боёв</span></td>
+		<td align="center" class="items">8762</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Фиалка')" style=cursor:hand> </td><td> <img src=images/signs/c40.gif><font class=user onclick="javascript:top.say_private('Фиалка')"> Фиалка</font></td><td>[<font class=lvl>21</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Фиалка','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		опыта</span></td>
+		<td align="center" class="items">99999999999</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Алиса')" style=cursor:hand> </td><td> <img src=images/signs/none.gif><font class=user onclick="javascript:top.say_private('Алиса')"> Алиса</font></td><td>[<font class=lvl>30</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Алиса','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		</span><font class=hp>HP</font></td>
+		<td align="center" class="items">2218</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Dark4angel')" style=cursor:hand> </td><td> <img src=images/signs/none.gif><font class=user onclick="javascript:top.say_private('Dark4angel')"> Dark4angel</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Dark4angel','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		</span><font class=ma>MA</font></td>
+		<td align="center" class="items">5548</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('buggati')" style=cursor:hand> </td><td> <img src=images/signs/none.gif><font class=user onclick="javascript:top.say_private('buggati')"> buggati</font></td><td>[<font class=lvl>21</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=buggati','_blank')" style="cursor:hand"></font></td>
+	</tr>
+</table>
+	

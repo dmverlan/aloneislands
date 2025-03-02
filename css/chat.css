@@ -1,0 +1,236 @@
+a.ActiveBc{
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #AAAAAA;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: center;
+	background-color: #DDDDDD;
+	padding:2px;
+}
+a.ActiveBc:hover{
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #FF2222;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: center;
+	background-color: #DDDDDD;
+	padding:2px;
+}
+a.nActiveBc{
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #FFFFFF;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: center;
+	font-weight: bold;
+	background-color: #222222;
+	padding:2px;
+}
+a.nActiveBc:hover{
+	font-family: Tahoma;
+	font-size: 10px;
+	color: #FFFFFF;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: center;
+	font-weight: bold;
+	background-color: #222222;
+	padding:2px;
+}
+
+#tbox {
+	border-style: none;
+	width: 150px;
+	float: right;
+	filter:alpha(opacity=20);
+    opacity: 0.2;
+}
+a.bga{
+	width:100%;
+	text-align:center;
+	border: 0px;
+	font-family: Trebuchet , "Trebuchet MS" , Tahoma , Verdana , Arial;
+	font-size: 10px;
+	color: #AAAAAA; 
+	font-weight:bold;
+	text-decoration:none;
+	background: #444444;
+	}
+a.bga:hover{
+	width:100%;
+	text-align:center;
+	border: 0px;
+	font-family: Trebuchet , "Trebuchet MS" , Tahoma , Verdana , Arial;
+	font-size: 10px;
+	color: #EEEEEE; 
+	font-weight:bold;
+	text-decoration:none;
+	background: #666666;
+	}
+a.bg{
+	width:100%;
+	text-align:center;
+	border: 0px;
+	font-family: Trebuchet , "Trebuchet MS" , Tahoma , Verdana , Arial;
+	font-size: 10px;
+	color: #AAAAAA; 
+	font-weight:bold;
+	text-decoration:none;
+	background: #333333;
+	}
+a.bg:hover{
+	width:100%;
+	text-align:center;
+	border: 0px;
+	font-family: Trebuchet , "Trebuchet MS" , Tahoma , Verdana , Arial;
+	font-size: 10px;
+	color: #EEEEEE; 
+	font-weight:bold;
+	text-decoration:none;
+	background: #666666;
+	}
+.hp_in_f {
+	border-style:  none;
+	font-family: Verdana, Arial, Verdana;
+	font-size: 10px;
+	color: #DD3333;
+}
+.green {
+	font-family: Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #66FF66;
+}
+.blue {
+	font-family: Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #6666FF;
+}
+.red {
+	font-family: Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 12px;
+	color: #FF6666;
+}
+.bnick {
+	font-family: Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+.hp {
+	font-family: Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #DD3333;
+}
+.ma {
+	font-family: Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #3333DD;
+}
+.priv {
+	font-family: Tahoma;
+	color: #A61437;
+	font-size: 10px;
+}
+.toyou {
+	font-family: Tahoma;
+	color: #9CA0E6;
+	font-size: 10px;
+}
+.clan {
+	font-family: Tahoma;
+	color: #7DBE7D;
+	font-size: 10px;
+}
+.clan_you {
+	font-family: Tahoma;
+	color: #5C6D33;
+	font-size: 10px;
+}
+
+
+.time {
+	font-family: Tahoma;
+	color: #FFFFFF;
+	font-size: 10px;
+}
+a {
+	color: #333333;
+	FONT: 13px Verdana, Tahoma, Verdana, Helvetica;
+	font-weight: bold;
+}
+a:hover {
+	color: #555555;
+	text-decoration: underline;
+}
+.lvl {
+	font-family: Trebuchet , "Trebuchet MS" , Tahoma , Verdana , Arial;
+	font-size: 12px;
+	text-decoration : none;
+	color: #0000FF;
+	font-weight: bold;
+}
+.timef {
+	font-family: Tahoma, Verdana, Arial, Verdana, Arial, Helvetica, Tahoma, Verdana, sans-serif;	
+	font-size: 11px;
+	color: #BBBBBB;
+	text-decoration : none;
+}
+.user {
+	font-family: Tahoma;
+	text-decoration : none;
+	color: #F5F5F5;
+	FONT-WEIGHT: bold;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+body {
+	FONT: 12px Verdana, Helvetica;
+        scrollbar-3dlight-color: #333;
+        scrollbar-arrow-color: #333;
+        scrollbar-base-color: #666666;
+        scrollbar-darkshadow-color: #666666;
+        scrollbar-face-color: #666;
+        scrollbar-highlight-color: #333;
+        scrollbar-shadow-color: #333;
+        scrollbar-track-color: #AAA;
+        color: #FFFFFF;
+}
+
+.but
+{
+	border-bottom-color: #AAAAAA;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+.al {
+	font-family: Tahoma;
+	font-size: 12px;
+	color: #BBEEFF;
+	FONT-WEIGHT: bold;
+}
+
+.alt {
+	background: #333333;
+}
+
+.menu {
+	z-index: 1;
+	width: 100px;
+	height: 10px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	filter:alpha(opacity=100);
+    -moz-opacity: 1;
+    -khtml-opacity: 1;
+    opacity: 1;
+    display:none;
+}

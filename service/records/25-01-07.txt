@@ -1,0 +1,52 @@
+
+	<table border="0" width="600" id="table1" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		побед</span></td>
+		<td align="center" class="items">3834</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Холодный Сердцем...')" style=cursor:hand> </td><td> <img src=images/signs/bse.gif><font class=user onclick="javascript:top.say_private('Холодный Сердцем...')"> Холодный Сердцем...</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Холодный Сердцем...','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		поражений</span></td>
+		<td align="center" class="items">106</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Холодный Сердцем...')" style=cursor:hand> </td><td> <img src=images/signs/bse.gif><font class=user onclick="javascript:top.say_private('Холодный Сердцем...')"> Холодный Сердцем...</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Холодный Сердцем...','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		умений &quot;Охота&quot;</span></td>
+		<td align="center" class="items">10000</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Slaider')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('Slaider')"> Slaider</font></td><td>[<font class=lvl>17</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Slaider','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		Игровой Валюты</span></td>
+		<td align="center" class="items">21907789</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Slaider')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('Slaider')"> Slaider</font></td><td>[<font class=lvl>17</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Slaider','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		боёв</span></td>
+		<td align="center" class="items">3940</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Холодный Сердцем...')" style=cursor:hand> </td><td> <img src=images/signs/bse.gif><font class=user onclick="javascript:top.say_private('Холодный Сердцем...')"> Холодный Сердцем...</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Холодный Сердцем...','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество 
+		опыта</span></td>
+		<td align="center" class="items">420003668</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Master Nazgull')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('Master Nazgull')"> Master Nazgull</font></td><td>[<font class=lvl>22</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Master Nazgull','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		</span><font class=hp>HP</font></td>
+		<td align="center" class="items">1790</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Master Nazgull')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('Master Nazgull')"> Master Nazgull</font></td><td>[<font class=lvl>22</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Master Nazgull','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		</span><font class=ma>MA</font></td>
+		<td align="center" class="items">1516</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Master Nazgull')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('Master Nazgull')"> Master Nazgull</font></td><td>[<font class=lvl>22</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Master Nazgull','_blank')" style="cursor:hand"></font></td>
+	</tr>
+</table>
+	

@@ -1,0 +1,165 @@
+<html>
+    <head>
+	 <LINK href=css/fancy.css rel=STYLESHEET type=text/css>
+	 <LINK href=css/main.css rel=STYLESHEET type=text/css>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="jquery.form.js"></script>
+	 <script type="text/javascript" language="javascript" src="js/tools/pngfix.js"></script>
+	 <script type="text/javascript" language="javascript" src="js/tools/fanky.js"></script>
+	 <SCRIPT src="js/sm2.js"></SCRIPT>
+	 <SCRIPT src="js/aimusic.js?2"></SCRIPT>
+    <script type="text/javascript">
+    // ========================================================== //
+    var listvisible=false;
+    // ========================================================== //
+    //Отправка файлов
+    $(function() {
+        $("#result").hide();
+        $("#done").hide();
+        
+        $("#uploader").ajaxForm({
+            url: "upload.php",
+            target: $("#output"),
+            beforeSubmit: function(a,f,o) {
+                $("#output").html("Загружается...");
+                $("#uploadercont").toggle();
+                $("#result").toggle();
+            },
+            success: function(data) {
+                $("#output").html("Готово!<br>");
+                $("#files").html(data);
+                $("#done").toggle();
+            }
+        });
+        
+        $("#ok").click(function() {
+            $("#result").toggle();
+            $("#done").toggle();
+            $("#uploadercont").toggle();
+        });
+        
+        $("#getlist").click(function() {
+            if(listvisible) {
+                $("#getlist").text("Показать список файлов");
+            } else {
+                $("#list").load("list.php");
+                $("#getlist").text("Скрыть список файлов");
+            }
+            $("#list").toggle();
+            listvisible=!listvisible;
+        });
+    });
+    // ========================================================== //
+	 
+	 
+	 
+		function sbox2(t,c)
+		{
+			return sbox2b(c)+t+sbox2e(); 
+		}
+
+		function sbox2b(c)
+		{
+			if (c) c = 'text-align:center;';
+			return '<table cellspacing="0" cellpadding="0" style="position:relative;top:-8px;width: 100%;"> <tr> <td style="width: 18px; height: 18px"> <img src="images/left_top.png" width="18" height="18"></td> <td style="height: 18px;background-image: url(\'images/top.png\');">&nbsp;</td> <td style="width: 18px; height: 18px"> <img src="images/right_top.png" width="18" height="18"></td> </tr> <tr> <td style="width: 18px;background-image: url(\'images/left.png\');">&nbsp;</td> <td style="background-image: url(\'images/bg.png\');'+c+'">';
+		}
+
+		function sbox2e()
+		{
+			return '</td> <td style="width: 18px;background-image: url(\'images/right.png\');">&nbsp;</td> </tr> <tr> <td style="width: 18px; height: 18px"> <img src="images/left_bottom.png" width="18" height="18"></td> <td style="height: 18px;background-image: url(\'images/bottom.png\');">&nbsp;</td> <td style="width: 18px; height: 18px"> <img src="images/right_bottom.png" width="18" height="18"></td> </tr> </table>';
+		}
+
+		function sbox3(t,c)
+		{
+			return sbox3b(c)+t+sbox3e(); 
+		}
+
+		function sbox3b(c)
+		{
+			if (c) c = 'text-align:center;';
+			return '<table style="width: 100%" cellspacing="0" cellpadding="0"> <tr> <td class=sbox3> </td> <td class=sbox3>&nbsp;</td> <td class=sbox3></td> </tr> <tr> <td class=sbox3>&nbsp;</td> <td class=sbox3c '+c+'">';
+		}
+
+		function sbox3e()
+		{
+			return '</td> <td class=sbox3>&nbsp;</td> </tr> <tr> <td class=sbox3></td> <td class=sbox3>&nbsp;</td> <td class=sbox3> </td> </tr> </table>';
+		}
+		function open_dialog()
+		{
+			$('#file').css("display","inline");
+			document.uploader.file.focus();
+			document.uploader.file.click();
+//			$('#file').css("display","none");
+		}
+    </script>
+    </head>
+    <body>
+	 <table border=0 width=100% height=100%>
+	 <tr>
+	 <td align=center>
+        <table width=300 border=0>
+		  <tr>
+		  <td id="head" style="cursor:pointer;" onclick="location = '/';"></td>
+		  </tr>
+		  <tr>
+		  <td>
+            <div id="uploadercont">
+				
+            <form id="uploader" method="POST" enctype="multipart/form-data" name=uploader>
+               <input type="hidden" name="MAX_FILE_SIZE" value="10000000000000" />
+					 
+					 
+					 <div id=maintable>
+					 <table border=0 width=100%>
+					 <tr>
+                <td class=head>Файл</td> <td><div class=file><input type="file" name="file" id="file" onchange="$('#filename').html(this.value);" class=inpfile value="" /></div><div class=head id=filename style="width:200px;overflow-x:hidden;"></div></td> 
+					 </tr>
+					 <tr>
+                <td class=head>Описание</td><td><textarea name="info" rows=3 style="width:100%;height:50px;" class=but ></textarea></td>
+					 </tr>
+					 <tr>
+                <td class=head>Автор</td><td><input type="text" name="author" class=but style="width:100%;" /></td>
+					 </tr>
+					 <tr>
+                <td colspan=3><input type="submit" value="Отправить!" class=time style="width:100%;height:40px;background-image: url('images/bg.png');border:0;cursor:pointer;background-color:transparent;" /></td>
+					 </tr>
+					 </table>
+					 </div>
+            </form>
+				
+            </div>
+            
+            <div id="result">
+					<div id="music" class=head></div>
+                <div id="output" class=head></div>
+                <div id="done" class=head>
+					 	<center>
+                    <div id="files" class=head></div>
+                    <button id="ok" style="width:300px" class=lbutton>OK</button>
+						</center> 
+                </div>
+            </div>
+         </td>   
+			</tr>
+			</table>
+           <center><div id="listcont" style="width:250px"><A class=but href="list.php" id=awt>Файлосписок</A><div id="list" style="width:500px;"></div></div></center>
+        		  
+	 </td>
+	 </tr>
+	 </table>
+	 
+	 <a href='123' style='display:none;' id=image>123</a>
+    </body>
+	 
+	 <script>
+	 var DWidth = document.body.clientWidth*0.9;
+	 var DHeight = document.body.clientHeight*0.9;
+	 jQuery("#awt").fancybox({'overlayShow': true , "frameWidth": DWidth, "frameHeight": DHeight , "overlayOpacity":0.2 }); 
+	 jQuery("#image").fancybox({'overlayShow': true , 'frameWidth': DWidth, 'frameHeight': DHeight , 'overlayOpacity':0.2 });
+	 $("#head").html(sbox2("<b class=head>Файлообменник[Герыч&Брандт (с)]</b>",1));
+	 $("#maintable").html(sbox2($("#maintable").html()));
+	 $("#result").html(sbox2($("#result").html()));
+	 
+	 document.body.style.background = "url('images/v1.jpg')";
+	 </script>
+</html>

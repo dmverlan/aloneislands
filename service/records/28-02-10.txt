@@ -1,0 +1,52 @@
+
+	<table border="0" width="600" id="table1" cellspacing="0" cellpadding="0">
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		побед</span></td>
+		<td align="center" class="items">18807</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('duster')" style=cursor:hand> </td><td> <img src=images/signs/c37.gif><font class=user onclick="javascript:top.say_private('duster')"> duster</font></td><td>[<font class=lvl>22</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=duster','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		поражений</span></td>
+		<td align="center" class="items">2569</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('sten')" style=cursor:hand> </td><td> <img src=images/signs/none.gif><font class=user onclick="javascript:top.say_private('sten')"> sten</font></td><td>[<font class=lvl>19</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=sten','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		умений &quot;Охота&quot;</span></td>
+		<td align="center" class="items">1000000</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('sL')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('sL')"> sL</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=sL','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		Игровой Валюты</span></td>
+		<td align="center" class="items">81111749.27</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('ADRENALIN1985')" style=cursor:hand> </td><td> <img src=images/signs/none.gif><font class=user onclick="javascript:top.say_private('ADRENALIN1985')"> ADRENALIN1985</font></td><td>[<font class=lvl>10</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=ADRENALIN1985','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		боёв</span></td>
+		<td align="center" class="items">19981</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('duster')" style=cursor:hand> </td><td> <img src=images/signs/c37.gif><font class=user onclick="javascript:top.say_private('duster')"> duster</font></td><td>[<font class=lvl>22</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=duster','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		опыта</span></td>
+		<td align="center" class="items">257022129</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('Рамзес')" style=cursor:hand> </td><td> <img src=images/signs/c40.gif><font class=user onclick="javascript:top.say_private('Рамзес')"> Рамзес</font></td><td>[<font class=lvl>23</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=Рамзес','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		</span><font class=hp>HP</font></td>
+		<td align="center" class="items">2483</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('extrime')" style=cursor:hand> </td><td> <img src=images/signs/c37.gif><font class=user onclick="javascript:top.say_private('extrime')"> extrime</font></td><td>[<font class=lvl>20</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=extrime','_blank')" style="cursor:hand"></font></td>
+	</tr>
+	<tr>
+		<td width="294" class="items"><span lang="ru">Самое большое количество
+		</span><font class=ma>MA</font></td>
+		<td align="center" class="items">9000</td>
+		<td class="items"><img src=images/pr.gif onclick="javascript:top.say_private('sL')" style=cursor:hand> </td><td> <img src=images/signs/watchers.gif><font class=user onclick="javascript:top.say_private('sL')"> sL</font></td><td>[<font class=lvl>15</font>]</td><td><img src=images/info.gif onclick="javascript:window.open('info.php?p=sL','_blank')" style="cursor:hand"></font></td>
+	</tr>
+</table>
+	

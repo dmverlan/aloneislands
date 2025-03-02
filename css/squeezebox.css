@@ -1,0 +1,154 @@
+.body-overlayed embed, .body-overlayed object, .body-overlayed select
+{
+	visibility:				hidden;
+}
+
+#sbox-window embed, #sbox-window object, #sbox-window select
+{
+	visibility:				visible;
+}
+
+#sbox-overlay
+{
+	position:				absolute;
+	background-color:		#000;
+}
+
+#sbox-window
+{
+	position:				absolute;
+	background-color:		#fff;
+	text-align:				left;
+	overflow:				visible;
+	padding:					4px;
+	-moz-border-radius:		3px;
+}
+
+#sbox-btn-close
+{
+	position:				absolute;
+	width:					30px;
+	height:					30px;
+	right:					-15px;
+	top:					-15px;
+	background:				url(../images/closebox.png) no-repeat center;
+	border:					none;
+}
+
+.sbox-window-ie6 #sbox-btn-close
+{
+	background-image:		url(../images/closebox.gif);
+}
+
+.sbox-loading #sbox-content
+{
+	background-image:		url(../images/spinner.gif);
+	background-repeat:		no-repeat;
+	background-position:	center;
+}
+
+#sbox-content
+{
+	clear:					both;
+	overflow:				auto;
+	background-color:		#fff;
+	height:					100%;
+	width:					100%;
+}
+
+.sbox-content-image#sbox-content
+{
+	overflow:				visible;
+}
+
+#sbox-image
+{
+	display:				block;
+}
+
+.sbox-content-image img
+{
+	display:				block;
+}
+
+.sbox-content-iframe#sbox-content
+{
+	overflow:				visible;
+}
+
+.footer
+{
+	font-family: Verdana;
+	font-size: 12px;
+	background-color: #EEEEEE;
+	border: 1px solid #DDDDDD;
+	filter:alpha(opacity=85);
+    -moz-opacity: 0.85;
+    -khtml-opacity: 0.85;
+    opacity: 0.85;
+    text-align: center;
+}
+
+.mfooter
+{
+	font-family: Verdana;
+	font-size: 12px;
+	background-color: #EEEEEE;
+	border: 1px solid #DDDDDD;
+	filter: alpha(opacity=85);
+	-moz-opacity: 0.85;
+	-khtml-opacity: 0.85;
+	opacity: 0.85;
+	text-align: center;
+	width: 200px;
+}
+
+
+a.Main 
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 1px solid #eee;
+	border-right-color: #ddd;
+	border-bottom-color: #ddd;
+	text-align: center;
+	font-family: "Trebuchet MS",Verdana, Geneva, Arial, Helvetica, sans-serif;
+	z-index: 50;
+	font-size: 12px;
+	text-decoration: none;
+}
+a.Main:hover
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 1px solid #eee;
+	border-right-color: #ddd;
+	border-bottom-color: #ddd;
+	text-align: center;
+	font-family: "Trebuchet MS",Verdana, Geneva, Arial, Helvetica, sans-serif;
+	z-index: 50;
+	font-size: 12px;
+	color: #FFFFFF;
+	text-decoration: none;
+}
+
+.wTitle
+{
+	border-style: none;
+	background-color: transparent;
+	font-family: Verdana, Arial, Tahoma;
+	FONT-SIZE: 14px;
+	COLOR: #FFF;
+	font-weight: bold;
+}
+
+.sTitle
+{
+	border-style: none;
+	background-color: transparent;
+	font-family: Verdana, Arial, Tahoma;
+	FONT-SIZE: 12px;
+	COLOR: #FFF;
+}

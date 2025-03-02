@@ -1,0 +1,61 @@
+<HTML>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<LINK href=main.css rel=STYLESHEET type=text/css>
+</head>
+
+<BODY topmargin="0" leftmargin="0" rightmargin="0" bottommargin="0" onload="update_parameters();">
+
+<table border="0" width="100%" class="inv">
+	<tr>
+		<td>Скорость обновления чата</td>
+		<td align="right"><input type=button class=laar onclick="top.change_chatspeed();update_parameters();" name=spchat value=""></td>
+	</tr>
+	<tr>
+		<td>Тип чата</td>
+		<td align="right"><input type=button class=laar onclick="top.change_chatsetup();update_parameters();" name=schat value="" title=''></td>
+	</tr>
+	<tr>
+		<td>Транслит</td>
+		<td align="right"><input type=button value="" onclick="top.ruslat_c();update_parameters();" class=laar name=lr title=" "></td>
+	</tr>
+	<tr>
+		<td>
+		<input type=button value="Обновить игровое окно" onclick="top.frames['main_top'].location='main.php';" class=laar></td>
+		<td align="right">
+		<input type=button value="Обновить список чата" onclick="top.frames['ch_list'].location='ch.php';" class=laar></td>
+	</tr>
+	<tr>
+		<td>Открыть информацию о персонаже</td>
+		<td align="right">
+		<form onsubmit="open_info();return false;">
+		<input type="text" name="nick" size="20" class=laar> <input type="submit" value="Открыть" class=laar>
+		</form></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+		<input type=button value="Возможности персонажа" onclick="top.frames['main_top'].location='main.php?go=addon';" class=laar></td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+		<input type=button value="Закрыть меню" onclick="top.frames['chmain'].location='chat.php';" class=laar></td>
+	</tr>
+</table>
+
+<script>
+function update_parameters()
+{
+document.getElementById('spchat').value = top.frames['ch_buttons'].document.getElementById('spchat').value+" сек.";
+document.getElementById('schat').value = top.frames['ch_buttons'].document.getElementById('schat').value;
+document.getElementById('schat').title = top.frames['ch_buttons'].document.getElementById('schat').title;
+(top.ruslat) ? document.getElementById('lr').value = 'Включено' : document.getElementById('lr').value = 'Выключено';
+document.getElementById('lr').title = top.frames['ch_buttons'].document.getElementById('lr').title;
+}
+function open_info()
+{
+	window.open('info.php?'+document.getElementById('nick').value,'','width=800,height=600,left=10,top=10,toolbar=no,scrollbars=yes,resizable=yes,status=no');
+}
+</script>
+</BODY>
+</HTML>

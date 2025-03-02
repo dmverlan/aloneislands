@@ -1,0 +1,2 @@
+var list=new Array(
+'Apokalips|12|none||20|||','igoron90|17|rc2| †КоксинатоР† |6|||','NasTya|20|c40|Настик Фломастик))|5|||','Древний|20|c004|0_о|4|||','Sijey|14|rc2||3|||','ministr|8|none||1|||','Quasimodo|16|none||1|||','geogex|5|none||1|||','громобой|17|c007|Глава Хим. Отдела|1|||','Дакотка|4|none||0|||','nikver|0|none||0|||','РезвоеСитечко|10|none||0|||','Achilles|0|none||0|||','Ambriel|0|none||0|||','Лайз|0|none||0|||','Solomir|0|none||0|||','greshnik|0|none||0|||','Сталин|0|none||0|||','BatYA|0|none||0|||','xthnb4vj|0|none||0|||');show_list ('0+');

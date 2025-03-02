@@ -1,0 +1,49 @@
+.ch_mode{
+	FONT: 10px Tahoma;
+	color: #FFFFFF;
+}
+
+input{
+	FONT: 12px Tahoma;
+	color: #FFFFFF;
+}
+
+.lall {
+	font-family: Tahoma;
+	font-size: 10px;
+	font-weight: bold;
+	color: #FFFFFF;
+	cursor:pointer;
+	display:block;
+	width:50px;
+}
+.lpriv {
+	font-family: Tahoma;
+	font-size: 10px;
+	font-weight: bold;
+	color: #FFCC99;
+	cursor:pointer;
+	display:block;
+	width:50px;
+}
+.lclan {
+	font-family: Tahoma;
+	font-size: 10px;
+	font-weight: bold;
+	color: #99FFCC;
+	cursor:pointer;
+	display:block;
+	width:50px;
+}
+
+.message {
+	padding-left:2px;
+	font-family: Verdana;
+	font-size: 11px;
+	border:1px solid transparent;
+	background-color:transparent;
+	width:100%
+}
+.message:focus {
+	border:1px solid #5C6263;
+}

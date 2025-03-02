@@ -1,0 +1,56 @@
+.jquery-selectbox {
+	height: 16px;
+	border: 1px solid #DDDDDD;
+	width: 120px;
+	display: block;
+	margin: 4px 4px 4px 0;
+	font-size: 11px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #000000;
+	padding: 0;
+	background-image: url('../images/login.gif');
+	font-weight: bold;
+	cursor:pointer;
+}
+
+.jquery-selectbox-list {
+	float:left;
+	background: #FFF;
+	display: none;
+	position:absolute;
+	z-index:3;
+	border: 1px solid #DDDDDD;
+	opacity: 0.8;
+	filter: alpha(opacity=80);
+	overflow-x: hidden;
+	overflow-y: auto;
+	text-align:center;
+}
+a.moreButton {
+	float: right;
+	background: url("../images/login/sb.gif");
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	display:inline;
+}
+a.moreButton:hover {
+	background: url("../images/login/hsb.gif");
+}
+
+a.listelement {
+	padding: 3px 0px 0px 3px;
+	white-space: nowrap;
+	display: block;
+	overflow: hidden;
+	background: transparent;
+	color: #000;
+	cursor:pointer;
+	text-decoration:none;
+}
+a.listelement:hover {
+	background: #000099;
+	color: #eee;
+	cursor:pointer;
+	text-decoration:none;
+}

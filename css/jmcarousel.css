@@ -1,0 +1,61 @@
+/**********************************************/
+/* @name: style.css                           */
+/* @date: 19/11/07                            */
+/* @desc: aurasc css                     */
+/* @auth: kevin@enova-tech.net                */
+/**********************************************/
+/** General Elements && arrows description  ***/
+
+
+div.aurasc .prev{
+	background: url('./images/design/left.png') center center no-repeat;
+	width:47px;
+	height:61px;
+	border:0px;
+}
+
+div.aurasc .next{
+	background: url('./images/design/right.png') center center no-repeat;
+	width:40px;
+	height:61px;
+	border:0px;
+}
+
+div.aurasc .up{
+	background: url('css/img/up.png') center center no-repeat;
+	width:61px;
+	height:40px;
+	border:0px;
+}
+
+div.aurasc .down{
+	background: url('css/img/down.png') center center no-repeat;
+	width:47px;
+	height:61px;
+	border:0px;
+}
+
+
+div.aurasc{
+	border:0px;
+}
+
+div.aurasc ul{
+	
+}
+
+div.aurasc ul li{
+	margin:0px;
+	border:1px solid #ccc;
+	line-height:0px;
+	padding:0px;
+}
+
+div.aurasc ul li a{ /* in case of link */
+	display:block;
+}
+
+div.aurasc ul li img{
+	display:block;
+	border:0px;
+}
