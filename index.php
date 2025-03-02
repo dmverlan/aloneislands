@@ -1,83 +1,81 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
+    <!-- Указание кодировки и метаданных для SEO -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aloneislands — бесплатная фэнтези MMORPG с элементами стратегии, квестами и магией. Выбери расу и создавай новый мир!">
+    <meta name="keywords" content="онлайн игра, MMORPG, фэнтези, квесты, стратегия, магия, браузерная игра">
+    <title>Aloneislands: Вселенная в твоих руках!</title>
 
-<link rel="stylesheet" href="main.css" type="text/css" media="screen">
-<link rel="stylesheet" href="css/squeezebox.css" type="text/css" media="screen">
-
-<style type="text/css">
-   .indexFont {
-	   color: #4E312D;
-	   font-family: Arial;
-	   font-size: 11px;
-   }
-   .loginBox{
-   		border-width: 1px;
-		border-color: #717171;
-		border-style: solid;
-   		font-family: Tahoma;
-   		color: #4E312D;
-	  	font-size: 11px;
-	  	background-color: transparent;
-		background-image: url('images/emp.gif');
-	  	cursor:pointer;
-   }
-</style>
-
-<link rel='shortcut icon' href='images/icon.ico'>
-<link rel='shortcut icon' href='images/pict.png'>
-<title>Aloneislands: бесплатная ролевая браузерная онлайн (online) игра MMORPG free games on-line</title>
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
-<meta name=description content='Фэнтези онлайн игра с элементами стратегии, квестовой частью и возможностью самим участвовать в создании нового мира , присутвует механика и магия. Возможность выбора расы!'>
-<meta name='keywords' content='игра, играть, рпг, онлайн, online, fantasy, фэнтези, квест, алхимия, мир, земли, стратегия, магия, стихия, арена, бои, клан, семья, братство, сражение, тьма, свет, хаос, сумерки, удар, меч, нож, топор, дубина, щит, броня, доспех, шлем, перчатки, амулет, кулон, кольцо, пояс, зелья, карта, замки, шахты, лавка, таверна, артефакты, раритеты, свитки, свиток, школа, од, рыцарь, маг, друид, гоблин, орк, призрак, эльф, отдых, развлечение, чат, общение, знакомства, форум, власть, золото, серебро, телепорт, банк, рынок, мастерская, тактика, больница, храм, бог, демон, защита, сила, удача, ловкость, война, орден, аптека, почта, реторта, ступка, пестик, дистиллятор , механоид , оборотень , осрова , alone , islands , aloneislands , сила , реакция , воля , интелект , оружие , пистолет , балиста'>
-
-<script type="text/javascript" language="javascript" src="js/mootools.js"></script>
-<script type="text/javascript" language="javascript" src="js/SqueezeBox.js"></script>
-<script type="text/javascript" language="javascript" src="js/newmain.js"></script>
-<script type="text/javascript" language="javascript" src="js/cookie.js"></script>
-<!-- script type="text/javascript" language="javascript" src="js/snowstorm.js"></script -->
-<SCRIPT type="text/javascript" src="js/tools/sm2.js"></SCRIPT>
-
+    <!-- Подключение favicon -->
+    <link rel="icon" href="images/icon.ico" type="image/x-icon">
+    <!-- Подключение объединённых стилей -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Подключение скриптов с отложенной загрузкой -->
+    <script src="js/newmain.js" defer></script>
+    <script src="js/cookie.js" defer></script>
 </head>
+<body>
+    <!-- Фоновое изображение страницы -->
+    <img src="index/f.jpg" alt="Background" class="background">
+    <!-- Контейнер для управления звуком -->
+    <div id="sound-layer"></div>
+    <!-- Наложения для декоративных элементов -->
+    <div class="overlay left-overlay"></div>
+    <div class="overlay right-overlay"></div>
+    
+    <!-- Основной контент страницы -->
+    <main class="content">
+        <!-- Логотип игры -->
+        <img src="index/1024/logo2.png" alt="Logo" class="logo">
+        <!-- Контейнер для формы входа -->
+        <div class="login-container">
+            <form action="game.php" method="post" name="auth" id="auth-form">
+                <table>
+                    <!-- Сообщение об ошибке или подсказка -->
+                    <tr><td class="indexFont login-error"></td></tr>
+                    <!-- Поле ввода логина -->
+                    <tr><td class="indexFont">Логин<br><input class="loginBox" type="text" name="user"></td></tr>
+                    <!-- Поле ввода пароля -->
+                    <tr><td class="indexFont">Пароль<br><input class="loginBox" type="password" name="pass"></td></tr>
+                </table>
+                <!-- Кнопка отправки формы -->
+                <button type="submit" class="submit-btn"><img src="index/1024/v.png" alt="Войти"></button>
+            </form>
+        </div>
+    </main>
+    
+    <!-- Нижняя часть страницы с навигацией и копирайтом -->
+    <footer>
+        <nav>
+            <a href="reg.php" class="boxed">Регистрация</a> |
+            <a href="forum/" class="boxed">Форум</a> |
+            <a href="remind.php" class="boxed">Забыли пароль?</a>
+        </nav>
+        <p>© Copyright 2006-2009, Alone Islands Ltd. Все права защищены.</p>
+    </footer>
 
-<script>
-window.addEvent('domready', function() {
-SqueezeBox.initialize({
-size: {x: 350, y: 400},
-ajaxOptions: {
-method: 'get'
-}
-});
+    <!-- Модальное окно для iframe -->
+    <dialog id="modal">
+        <div class="modal-content">
+            <!-- Кнопка закрытия модального окна -->
+            <button id="close-modal">×</button>
+            <!-- Фрейм для отображения содержимого -->
+            <iframe id="modal-iframe" frameborder="0"></iframe>
+        </div>
+    </dialog>
 
+    <!-- Yandex.Metrika для аналитики -->
+    <script src="//mc.yandex.ru/resource/watch.js" async></script>
+    <script>
+        try { const yaCounter184038 = new Ya.Metrika(184038); } catch (e) {}
+    </script>
+    <noscript><div style="position:absolute;"><img src="//mc.yandex.ru/watch/184038" alt=""></div></noscript>
 
-$$('a.boxed').each(function(el) {
-el.addEvent('click', function(e) {
-new Event(e).stop();
-SqueezeBox.fromElement(el);
-});
-});
-
-$$('.panel-toggler').each(function(el) {
-var target = el.getLast().setStyle('display', 'none');
-el.getFirst().addEvent('click', function() {
-target.style.display = (target.style.display == 'none') ? '' : 'none';
-});
-});
-});
-
-<?
-	echo  "index('".$_GET['error']."');";
-?>
-
-</script>
-
-
-<!-- Yandex.Metrika -->
-<script src="//mc.yandex.ru/resource/watch.js" type="text/javascript"></script>
-<script type="text/javascript">
-try { var yaCounter184038 = new Ya.Metrika(184038); } catch(e){}
-</script>
-<noscript><div style="position: absolute;"><img src="//mc.yandex.ru/watch/184038" alt="" /></div></noscript>
-<!-- Yandex.Metrika -->
-
+    <!-- Счётчики посещений -->
+    <img src="http://counter.yadro.ru/hit?t26.5;r" alt="LiveInternet" style="display:none;">
+    <img src="http://dc.c6.b2.a1.top.list.ru/counter?id=1207359;t=109" alt="Mail.ru" style="display:none;">
+    <img src="http://yandeg.ru/count/cnt.php?id=107052" alt="Yandeg" style="display:none;">
+</body>
 </html>
