@@ -1,372 +1,412 @@
-<?
-$sql_queries_counter=0;
-$sql_queries_timer=0;
-$sql_longest_query_t=0;
-$sql_longest_query='';
-$last_say_to_chat=0;
-$sql_all[0]= '';
-$GLOBAL_TIME = time();
-$battle_log = '';
+<?php
+// Защита от прямого доступа к файлу
+defined('ACCESS') or define('ACCESS', true) or die('Access denied');
 
-foreach ($_POST as $key=>$value) $_POST[$key] = filter($value);
-foreach ($_GET  as $key=>$value) $_GET[$key]  = filter($value);
-foreach ($_COOKIE  as $key=>$value) $_COOKIE[$key]  = filter($value);
-function tme()
-{
- GLOBAL $GLOBAL_TIME;
- return $GLOBAL_TIME;
-}
-function filter($v)
-{
-	return str_replace("'","",str_replace("\\","",htmlspecialchars($v)));
-}
+// Глобальные переменные для статистики и состояния
+$sqlQueriesCounter = 0;      // Счётчик SQL-запросов
+$sqlQueriesTimer = 0;        // Суммарное время выполнения запросов
+$sqlLongestQueryTime = 0;    // Время самого долгого запроса
+$sqlLongestQuery = '';       // Текст самого долгого запроса
+$lastSayToChat = 0;          // Время последнего сообщения в чат
+$sqlAll = [''];              // Лог всех SQL-запросов
+$globalTime = time();        // Глобальное время (замена time())
+$battleLog = '';             // Лог боя
 
-function bit_icon($type,$size=0)
-{
-	if ($size==0) $size = 60;
-	if ($type=='s') return "<img src=images/arena/bits/s/a".rand(1,13).".gif height=".$size." title=Сокрушительный>";
-	elseif ($type=='d') return "<img src=images/arena/bits/d/a".rand(1,7).".gif height=".$size." title=Уворот>";
-	else return "<img src=images/arena/bits/t/a".rand(1,11).".gif height=".$size." title=Точный>";
-}
-// Боевые
-// Функция удара от человека.
-function human_udar ($point,$_pers,$_persvs,$req,$en,$delta) {
-if ($_pers["udmin"]<1) $_pers["udmin"]=1;
-if ($_pers["udmax"]<1) $_pers["udmax"]=1;
-if ($delta<1) $delta=1;
-GLOBAL $colors,$fight,$kl,$die;
-if ($_pers["invisible"]>tme()){$_pers["user"] = '<i>невидимка</i>';$invyou=1;$_pers["pol"]='female';} else $invyou=0;
-if ($_persvs["invisible"]>tme()){$_persvs["user"] = '<i>невидимка</i>';$invvs=1;$_persvs["pol"]='female';} else $invvs=0;
-
-if (!$invvs)
-$nvs = "<font class=bnick color=".$colors[$_persvs["fteam"]].">".$_persvs["user"]."</font>[".$_persvs["level"]."]";
-else
-$nvs = "<font class=bnick color=".$colors[$_persvs["fteam"]]."><i>невидимка</i></font>[??]";
-
-	if ($_pers["pol"]=='female') $male='а'; else $male='';
-		if ($male=='а')
-		$pitalsa = 'пыталась';
-		else
-		$pitalsa = 'пытался';
-
-		if ($_persvs["pol"]=='female')
-		 {
-			$pogib = 'погибла';
-			$malevs='а';
-			$yvvs = 'увернулась';
-		 }
-		else
-		 {
-			$pogib = 'погиб';
-			$malevs='';
-			$yvvs = 'увернулся';
-		 }
-
-if (!$invyou)
-$nyou = "<font class=bnick color=".$colors[$_pers["fteam"]].">".$_pers["user"]."</font>[".$_pers["level"]."]";
-else
-$nyou = "<font class=bnick color=".$colors[$_pers["fteam"]]."><i>невидимка</i></font>[??]";
-
-switch ($point) {
-case ("ug"): {$bpoint="bg";$ypoint="удар в голову";break;}
-case ("ut"): {$bpoint="bt";$ypoint="удар в грудь";break;}
-case ("uj"): {$bpoint="bj";$ypoint="удар по животу";break;}
-case ("un"): {$bpoint="bn";$ypoint="удар по ногам";break;}
-}
-//echo $_persvs[$bpoint]."-",$_persvs["user"]." ".$bpoint."<br>";
-
-$_W = Weared_Weapons($_pers["uid"]);
-if($req[$point]!='magic')
-$req[$point] -= $_W["OD"];
-
-$_pers["udmin"] +=	$_pers["udmin"]*$_pers["sb2"]/100+
-					$_W["noji"]["udmin"]*$_pers["sb3"]/200+
-					$_W["mech"]["udmin"]*$_pers["sb5"]/200+
-					$_W["topo"]["udmin"]*$_pers["sb6"]/200+
-					$_W["drob"]["udmin"]*$_pers["sb7"]/200;
-
-$_pers["udmax"] +=	$_pers["udmax"]*$_pers["sb2"]/100+
-					$_W["noji"]["udmax"]*$_pers["sb3"]/200+
-					$_W["mech"]["udmax"]*$_pers["sb5"]/200+
-					$_W["topo"]["udmax"]*$_pers["sb6"]/200+
-					$_W["drob"]["udmax"]*$_pers["sb7"]/200;
-
-if($_persvs["uid"] and $_persvs["sb4"])
-	$_persvs["kb"] += sqlr("SELECT SUM(kb) FROM wp WHERE uidp=".intval($_persvs["uid"])." and weared=1 and stype='shit'")*$_persvs["sb4"]/33;
-
-$ud_name = '';
-if ($req[$point]==3) $ud_name = 'простой ';
-elseif ($req[$point]==5) $ud_name = 'прицельный ';
-elseif ($req[$point]==7) $ud_name = 'оглушающий ';
-else
-{
-	$spd = sqla("SELECT * FROM u_special_dmg WHERE uid=".$_pers["uid"]." and od=".intval($req[$point])."");
-	$ud_name = "<b>".$spd["name"]."</b> ";
+// Подключение к базе данных (используем настройки из configs/config.php)
+require_once 'configs/config.php';
+try {
+    $db = new PDO(
+        "mysql:host=$mysqlhost;dbname=$mysqlbase;charset=utf8",
+        $mysqluser,
+        $mysqlpass,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Выбрасывать исключения при ошибках
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC // Ассоциативные массивы по умолчанию
+        ]
+    );
+} catch (PDOException $e) {
+    error_log("Ошибка подключения к базе данных: " . $e->getMessage());
+    die("Ошибка подключения к базе данных");
 }
 
-if($ud_name=='') return false;
-
-$ud_name .= $ypoint;
-$fall = '';
-
-if (!$_persvs["uid"]) $_persvs[$bpoint] = mtrunc(rand(-2,1));
-
-if (!empty ($req[$point]) and ($req[$point]<>'magic'or($req[$point]=='magic' and !empty($req[$point."p"])))and($req[$point]<>'kid'or($req[$point]=='kid' and !empty($req[$point."p"]))) and (intval($req[$point])>0 or $req[$point]=='kid' or $req[$point]=='magic'))
- {
- if($_persvs["chp"]>0)
- {
-
-
-	$zakname = '';
-	$kl=1;
-	$block='';
-	$blocked=0;
-	if ($_pers["fstate"]==2)
-		{
-			$f_wp = sqla("SELECT * FROM wp WHERE uidp=".$_pers["uid"]." and weared=1 and stype='kid'");
-			$_pers["udmin"]=$f_wp["udmin"];
-			$_pers["udmax"]=$f_wp["udmax"];
-			$an = $f_wp["arrow_name"];
-			$ap = $f_wp["arrow_price"]/10;
-			$ud_name = "[<font class=time>".$an." :: ".$ap." LN</font>]".$ud_name;
-			sql("UPDATE wp SET arrows=arrows-1 WHERE id='".$f_wp["id"]."'");
-			$promax = rand(1,10)-$_pers["mf3"]/100;
-		}
-if (@$spd)
-{
-	if ($spd["type"]==1)
-	{
-		 $_pers["udmin"] *= 1+$spd["value"]/100;
-		 $_pers["udmax"] *= 1+$spd["value"]/100;
-	}
+// Фильтрация входных данных для предотвращения XSS и инъекций
+foreach ($_POST as $key => $value) {
+    $_POST[$key] = filter($value);
+}
+foreach ($_GET as $key => $value) {
+    $_GET[$key] = filter($value);
+}
+foreach ($_COOKIE as $key => $value) {
+    $_COOKIE[$key] = filter($value);
 }
 
-	$ydar = ydar ($_pers,$_persvs)/$delta;
-	if ($req[$point]==5) $ydar *= 1.1;
-	if ($req[$point]==7) $ydar *= 1.2;
-
-	$ylov = ylov($_pers,$_persvs);
-	$sokr = sokr($_pers,$_persvs);
-	$yar  = yar ($_pers,$_persvs);
-
-if ($_persvs["is_art"]<1) $_persvs["is_art"]=1;
-if ($_pers["is_art"]<1) $_pers["is_art"]=1;
-$yar  *= $_pers["is_art"];
-$ylov *= $_persvs["is_art"];
-$sokr *= $_pers["is_art"];
-$ydar *= $_pers["is_art"];
-$ydar = floor($ydar);
-
-if ($ylov>70) $ylov = 70;
-if ($sokr>70) $sokr = 70;
-
-if (@$spd)
-{
-	if ($spd["type"]==1)
-	{
-		 $_pers["udmin"] = $_pers["udmin"]/(1+$spd["value"]/100);
-		 $_pers["udmax"] = $_pers["udmax"]/(1+$spd["value"]/100);
-	}
-	if ($spd["type"]==2) $sokr = $sokr+$sokr*$spd["value"]/70;
-	if ($spd["type"]==3) $ylov = $ylov-$ylov*$spd["value"]/70;
+/**
+ * Возвращает глобальное время
+ * @return int Текущее время в секундах
+ */
+function tme() {
+    global $globalTime;
+    return $globalTime;
 }
 
-if ($yar>rand(0,100))
-{
-	$ydar *= 1.7;
-	$ydar = round($ydar);
-	if ($block=='') $block=',';
-	$block.='<font color=green>нанося яростный удар</font>,';
+/**
+ * Фильтрует строку для предотвращения XSS и SQL-инъекций
+ * @param mixed $value Входные данные
+ * @return string Отфильтрованная строка
+ */
+function filter($value) {
+    if (!is_string($value)) {
+        return $value; // Если не строка, возвращаем как есть (например, числа)
+    }
+    return htmlspecialchars(str_replace(["'", "\\"], '', $value), ENT_QUOTES, 'UTF-8');
 }
 
-$ksokr = 2;
+/**
+ * Генерирует HTML-код иконки для типа удара в бою
+ * @param string $type Тип удара ('s' - сокрушительный, 'd' - уворот, 't' - точный)
+ * @param int $size Размер иконки в пикселях (по умолчанию 60)
+ * @return string HTML-код иконки
+ */
+function bit_icon($type, $size = 0) {
+    $size = $size <= 0 ? 60 : (int)$size; // Устанавливаем размер по умолчанию и защищаем от некорректных значений
 
-
-$CRITISISED = 0;
-if (rand(0,100)<$sokr)
-{
-	$ydar=round($ydar*$ksokr);
-	$CRITISISED = 1;
+    switch ($type) {
+        case 's':
+            $rand = rand(1, 13);
+            return "<img src=\"images/arena/bits/s/a{$rand}.gif\" height=\"{$size}\" title=\"Сокрушительный\">";
+        case 'd':
+            $rand = rand(1, 7);
+            return "<img src=\"images/arena/bits/d/a{$rand}.gif\" height=\"{$size}\" title=\"Уворот\">";
+        default:
+            $rand = rand(1, 11);
+            return "<img src=\"images/arena/bits/t/a{$rand}.gif\" height=\"{$size}\" title=\"Точный\">";
+    }
 }
+/**
+ * Рассчитывает удар человека по противнику в бою
+ * @param string $point Точка удара ('ug' - голова, 'ut' - грудь, 'uj' - живот, 'un' - ноги)
+ * @param array $pers Данные атакующего персонажа
+ * @param array $persvs Данные цели
+ * @param array $req Требования для удара (например, тип атаки)
+ * @param bool $en Флаг противника (true - враг, false - игрок)
+ * @param float $delta Множитель урона
+ * @return string Лог удара для вывода в бою
+ */
+function human_udar($point, $pers, $persvs, $req, $en, $delta) {
+    global $colors, $fight, $kl, $die, $db;
 
-	if ($_persvs[$bpoint]==1)
-	 {
-		if ($ydar/(mtrunc($_persvs["kb"])/3+1)>2)
-		{$ydar*=0.3;
-		$block=", пробивая простой блок ,";}
-		else
-		{
-		$ydar=0;
-		$blocked = 1;
-		}
-	 }
-	if ($_persvs[$bpoint]==2)
-	 {
-		if ($ydar/(mtrunc($_persvs["kb"])/3+1)>3)
-		{$ydar*=0.2;
-		$block=", пробивая усиленный блок ,";}
-		else
-		{
-		$ydar=0;
-		$blocked = 1;
-		}
-	 }
+    // Устанавливаем минимальные значения урона
+    $pers['udmin'] = max(1, (int)$pers['udmin']);
+    $pers['udmax'] = max(1, (int)$pers['udmax']);
+    $delta = max(1, (float)$delta);
 
-	if ($_persvs[$bpoint]==5)
-	 {
-		if ($ydar/(mtrunc($_persvs["kb"])/3+1)>5)
-		{$ydar*=0.1;
-		$block=", пробивая крепчайший блок ,";}
-		else
-		{
-		$ydar=0;
-		$blocked = 1;
-		}
-	 }
+    // Проверка невидимости
+    $invyou = $pers['invisible'] > tme();
+    $invvs = $persvs['invisible'] > tme();
+    if ($invyou) {
+        $pers['user'] = '<i>невидимка</i>';
+        $pers['pol'] = 'female';
+    }
+    if ($invvs) {
+        $persvs['user'] = '<i>невидимка</i>';
+        $persvs['pol'] = 'female';
+    }
 
-unset($zid);
+    // Форматирование ников с учётом команд и невидимости
+    $nyou = sprintf('<font class="bnick" color="%s">%s</font>[%s]',
+        $colors[$pers['fteam']],
+        $invyou ? '<i>невидимка</i>' : $pers['user'],
+        $invyou ? '??' : $pers['level']
+    );
+    $nvs = sprintf('<font class="bnick" color="%s">%s</font>[%s]',
+        $colors[$persvs['fteam']],
+        $invvs ? '<i>невидимка</i>' : $persvs['user'],
+        $invvs ? '??' : $persvs['level']
+    );
 
-if ($req[$point]=='magic')
- $zid = $req[$point."p"];
+    // Гендерные окончания для текста
+    $male = $pers['pol'] === 'female' ? 'а' : '';
+    $pitalsa = $male === 'а' ? 'пыталась' : 'пытался';
+    $malevs = $persvs['pol'] === 'female' ? 'а' : '';
+    $pogib = $persvs['pol'] === 'female' ? 'погибла' : 'погиб';
+    $yvvs = $persvs['pol'] === 'female' ? 'увернулась' : 'увернулся';
 
- $z=1;
-if ($zid)
-include ('inc/inc/magic.php');
+    // Определение точки удара
+    $points = [
+        'ug' => ['bpoint' => 'bg', 'ypoint' => 'удар в голову'],
+        'ut' => ['bpoint' => 'bt', 'ypoint' => 'удар в грудь'],
+        'uj' => ['bpoint' => 'bj', 'ypoint' => 'удар по животу'],
+        'un' => ['bpoint' => 'bn', 'ypoint' => 'удар по ногам']
+    ];
+    $bpoint = $points[$point]['bpoint'] ?? '';
+    $ypoint = $points[$point]['ypoint'] ?? '';
+    if (!$bpoint || !$ypoint) return false;
 
-	$ydar = floor($ydar);
+    // Расчёт характеристик оружия
+    $weapons = weared_weapons($pers['uid']);
+    if ($req[$point] !== 'magic') {
+        $req[$point] -= $weapons['OD'];
+    }
 
- if ($blocked and $z==1)
- {
-	$z=0;
-	$s=$nvs." <b>заблокировал".$malevs."</b> <font class=timef>«".$ud_name."»</font>";
- }
-if ($z==1 and rand(0,100)<$promax)
- {
-	$z=0;
-	$s=$nyou." промах";
-	$ydar = 0;
- }
-if ($z==1 and rand(0,100)<$ylov)
- {
-	$z=0;
-	$s= bit_icon("d",16).$nyou." ".$pitalsa." поразить соперника, но ".$nvs." <b>".$yvvs."</b> от <font class=timef>«".$ud_name."»</font>";
-	$ydar = 0;
- }
-if ($z==1 and $CRITISISED)
- {
-	$z=0;
-	$s= bit_icon("s",16).$nyou." ".$block." поразил".$male." ".$nvs." на	<font class=bnick color=#CC0000><b>-".$ydar."</b></font> <font class=timef>«cокрушительный ".$ud_name."»</font>";
- }
-if ($z==1)
- {
-	$z=0;
-	$s= bit_icon("t",16).$nyou." ".$block." поразил".$male." ".$nvs." на <b class=user>-".$ydar."</b> <font class=timef>«".$ud_name."»</font>";
- }
+    // Увеличение урона от навыков и оружия
+    foreach (['udmin', 'udmax'] as $damage) {
+        $pers[$damage] += $pers[$damage] * ($pers['sb2'] / 100) +
+                          $weapons['noji'][$damage] * ($pers['sb3'] / 200) +
+                          $weapons['mech'][$damage] * ($pers['sb5'] / 200) +
+                          $weapons['topo'][$damage] * ($pers['sb6'] / 200) +
+                          $weapons['drob'][$damage] * ($pers['sb7'] / 200);
+    }
 
- if (@$spd and $spd["type"]==4 and !$blocked)
-{
-	$_persvs["cma"]-=$spd["value"];
-	$_persvs["cma"]=mtrunc($_persvs["cma"]);
-	$s .= "(<font class=ma>-".$spd["value"]." МАНЫ</font>)";
-}
-		if ($z==0)
-		{
-			$_persvs["chp"] -= $ydar;
-			$_pers["fexp"] += $ydar;
-			if (!$invvs)
-				$s .= "<font class=hp_in_f>[".mtrunc($_persvs["chp"])."/".$_persvs["hp"]."]</font>";
-		}
+    // Учёт брони противника
+    if ($persvs['uid'] && $persvs['sb4']) {
+        $stmt = $db->prepare("SELECT SUM(kb) FROM wp WHERE uidp = :uid AND weared = 1 AND stype = 'shit'");
+        $stmt->execute([':uid' => (int)$persvs['uid']]);
+        $persvs['kb'] += ($stmt->fetchColumn() ?? 0) * $persvs['sb4'] / 33;
+    }
 
-		if ($MAGIC_LOG) $s = $MAGIC_LOG;
+    // Определение типа удара
+    $ud_name = '';
+    switch ($req[$point]) {
+        case 3: $ud_name = 'простой '; break;
+        case 5: $ud_name = 'прицельный '; break;
+        case 7: $ud_name = 'оглушающий '; break;
+        default:
+            if ($req[$point] !== 'magic' && $req[$point] !== 'kid') {
+                $stmt = $db->prepare("SELECT * FROM u_special_dmg WHERE uid = :uid AND od = :od");
+                $stmt->execute([':uid' => (int)$pers['uid'], ':od' => (int)$req[$point]]);
+                $spd = $stmt->fetch();
+                if ($spd) $ud_name = "<b>{$spd['name']}</b> ";
+            }
+    }
+    $ud_name .= $ypoint;
+    if (!$ud_name) return false;
 
-		if ($_persvs["chp"]<=0 and $z<>2)
-		 {
-			$_pers["fexp"]+= $_persvs["chp"];
-			$ydar += $_persvs["chp"];
-			$_persvs["chp"]=0;
-			if (($_persvs["uid"] or $_persvs["bid"]<0 or ($_persvs["level"]>($_pers["level"]+1) and $_persvs["rank_i"]>($_pers["rank_i"]-20*$_pers["is_art"]) and rand(0,100)<10)) and $_persvs["level"]>($_pers["level"]-2) and $fight["travm"]>=10)
-			{
-			$die=$nvs." <b>".$pogib."</b> , ".$nyou." опыт <font class=green>+".($_pers["level"]*10)."</font>.%".$die;
-			$_pers["kills"]++;
-			}
-			else
-			$die=$nvs." <b>".$pogib."</b>.%".$die;
-			$str = '';
-			if (!$_persvs["uid"])include ('inc/inc/bots/drop.php');
-			else include ('inc/inc/fights/travm.php');
-			$die.=$str;
-		 }
-			if ($z<>2)
-			{
-			if(!$_persvs["id_skin"])
-			$_pers["exp_in_f"]+= experience($ydar,
-				$_pers["level"],$_persvs["level"],$_persvs["uid"],$_persvs["rank_i"]);
-			else
-			$_pers["exp_in_f"]+= experience($ydar*0.3,
-				$_pers["level"],$_persvs["level"],$_persvs["uid"],$_persvs["rank_i"]);
-			$_pers["damage_give"]=$ydar;
-			}
-		if ($_pers["chp"]<=0)$_pers["chp"]=0;
-		if (strpos($_pers["aura"],'vampire')>0
-		and round($ydar/10)>0 and $no_mana==false and $_pers["chp"]>0 and $z<>2)
-		{
-			if (DAY_TIME==0)
-			{
-			$_pers["chp"]+=round($ydar/9);
-			$s.=".Вампиризм <font class=hp>+".round($ydar/9)."HP</font>";
-			}
-			 else
-			{
-			$_pers["chp"]+=round($ydar/10);
-			$s.=".Вампиризм <font class=hp>+".round($ydar/10)."HP</font>";
-			}
-		}
+    $fall = '';
+    if (!$persvs['uid']) {
+        $persvs[$bpoint] = mtrunc(rand(-2, 1));
+    }
 
-		$fall=$fall.$s;
-		if ($z<>2)
-		{
-		if ($_persvs["uid"])
-		{
-		if (!$en)sql ("UPDATE `users` SET `chp`='".$_persvs["chp"]."' ,`cma`='".$_persvs["cma"]."' ,`refr`=1
-		WHERE `uid`='".$_persvs["uid"]."'");
-		else
-		sql ("UPDATE `users` SET `chp`='".$_persvs["chp"]."' ,`cma`='".$_persvs["cma"]."'
-		WHERE `uid`='".$_persvs["uid"]."'");
-		}
-		else
-		 sql ("UPDATE `bots_battle` SET `chp`='".$_persvs["chp"]."' ,`cma`='".$_persvs["cma"]."'
-		WHERE `id`= ".$_persvs["id"]."");
-		}
-	sql ("UPDATE `users` SET
-	`fexp`='".$_pers["fexp"]."',
-	`chp`='".$_pers["chp"]."' ,
-	`exp_in_f` = '".$_pers["exp_in_f"]."',
-	`damage_give` = ".$_pers["damage_give"].",
-	kills = ".$_pers["kills"]."
-	WHERE `uid`='".$_pers["uid"]."'");
- }
- 	else
- 		$fall = $nyou." сделал".$malevs." контрольный удар по трупу";
-}
- if ($fall) $fall = $fall.". &nbsp;";
+    // Основная логика боя
+    if ($persvs['chp'] > 0 && !empty($req[$point]) && ($req[$point] !== 'magic' || !empty($req[$point . 'p'])) && ($req[$point] !== 'kid' || !empty($req[$point . 'p'])) && (is_numeric($req[$point]) || $req[$point] === 'kid' || $req[$point] === 'magic')) {
+        $kl = 1;
+        $block = '';
+        $blocked = false;
 
-GLOBAL $pers,$persvs;
-$pers = catch_user($pers["uid"]);
-if ($persvs["chp"]>0)
-{
- if ($persvs["uid"])
- $persvs = catch_user($persvs["uid"]);
- else
- $persvs = sqla("SELECT * FROM bots_battle WHERE id= ".$persvs["id"]."");
-}
-else
-{
-	$persvs = sqla("SELECT * FROM users WHERE cfight=".$pers["cfight"]." and fteam<>".$pers["fteam"]." and chp>0");
-	if (!$persvs["uid"])
-	$persvs = sqla("SELECT * FROM bots_battle WHERE cfight=".$pers["cfight"]." and fteam<>".$pers["fteam"]." and chp>0");
-}
+        // Особый случай для состояния персонажа
+        if ($pers['fstate'] == 2) {
+            $stmt = $db->prepare("SELECT * FROM wp WHERE uidp = :uid AND weared = 1 AND stype = 'kid'");
+            $stmt->execute([':uid' => (int)$pers['uid']]);
+            $f_wp = $stmt->fetch();
+            if ($f_wp) {
+                $pers['udmin'] = $f_wp['udmin'];
+                $pers['udmax'] = $f_wp['udmax'];
+                $ud_name = "[<font class=\"time\">{$f_wp['arrow_name']} :: " . ($f_wp['arrow_price'] / 10) . " LN</font>]$ud_name";
+                $stmt = $db->prepare("UPDATE wp SET arrows = arrows - 1 WHERE id = :id");
+                $stmt->execute([':id' => $f_wp['id']]);
+                $promax = rand(1, 10) - $pers['mf3'] / 100;
+            }
+        }
 
-return $fall;
+        // Усиление урона от специальных атак
+        if ($spd && $spd['type'] == 1) {
+            $pers['udmin'] *= 1 + $spd['value'] / 100;
+            $pers['udmax'] *= 1 + $spd['value'] / 100;
+        }
+
+        // Расчёт базовых параметров удара
+        $ydar = ydar($pers, $persvs) / $delta;
+        if ($req[$point] == 5) $ydar *= 1.1; // Прицельный удар
+        if ($req[$point] == 7) $ydar *= 1.2; // Оглушающий удар
+
+        $ylov = ylov($pers, $persvs);
+        $sokr = sokr($pers, $persvs);
+        $yar = yar($pers, $persvs);
+
+        $pers['is_art'] = max(1, $pers['is_art']);
+        $persvs['is_art'] = max(1, $persvs['is_art']);
+        $yar *= $pers['is_art'];
+        $ylov *= $persvs['is_art'];
+        $sokr *= $pers['is_art'];
+        $ydar = floor($ydar * $pers['is_art']);
+
+        $ylov = min(70, $ylov);
+        $sokr = min(70, $sokr);
+
+        // Модификаторы от специальных атак
+        if ($spd) {
+            if ($spd['type'] == 2) $sokr += $sokr * $spd['value'] / 70;
+            if ($spd['type'] == 3) $ylov -= $ylov * $spd['value'] / 70;
+            if ($spd['type'] == 1) {
+                $pers['udmin'] /= 1 + $spd['value'] / 100;
+                $pers['udmax'] /= 1 + $spd['value'] / 100;
+            }
+        }
+
+        // Яростный удар
+        if ($yar > rand(0, 100)) {
+            $ydar = round($ydar * 1.7);
+            $block .= $block ? ',' : '';
+            $block .= '<font color="green">нанося яростный удар</font>';
+        }
+
+        $ksokr = 2;
+        $CRITISISED = rand(0, 100) < $sokr;
+        if ($CRITISISED) {
+            $ydar = round($ydar * $ksokr);
+        }
+
+        // Проверка блока противника
+        $kbFactor = mtrunc($persvs['kb']) / 3 + 1;
+        if ($persvs[$bpoint] == 1) {
+            if ($ydar / $kbFactor > 2) {
+                $ydar *= 0.3;
+                $block = ", пробивая простой блок ,";
+            } else {
+                $ydar = 0;
+                $blocked = true;
+            }
+        } elseif ($persvs[$bpoint] == 2) {
+            if ($ydar / $kbFactor > 3) {
+                $ydar *= 0.2;
+                $block = ", пробивая усиленный блок ,";
+            } else {
+                $ydar = 0;
+                $blocked = true;
+            }
+        } elseif ($persvs[$bpoint] == 5) {
+            if ($ydar / $kbFactor > 5) {
+                $ydar *= 0.1;
+                $block = ", пробивая крепчайший блок ,";
+            } else {
+                $ydar = 0;
+                $blocked = true;
+            }
+        }
+
+        $ydar = floor($ydar);
+        $z = 1;
+
+        // Магия (если применимо)
+        if ($req[$point] === 'magic' && !empty($req[$point . 'p'])) {
+            $zid = $req[$point . 'p'];
+            require 'inc/inc/magic.php'; // Предполагается, что magic.php обновляет $z и $s
+        }
+
+        // Формирование лога удара
+        if ($blocked && $z == 1) {
+            $z = 0;
+            $s = "$nvs <b>заблокировал$malevs</b> <font class=\"timef\">«$ud_name»</font>";
+        } elseif ($z == 1 && rand(0, 100) < ($promax ?? 0)) {
+            $z = 0;
+            $s = "$nyou промах";
+            $ydar = 0;
+        } elseif ($z == 1 && rand(0, 100) < $ylov) {
+            $z = 0;
+            $s = bit_icon('d', 16) . "$nyou $pitalsa поразить соперника, но $nvs <b>$yvvs</b> от <font class=\"timef\">«$ud_name»</font>";
+            $ydar = 0;
+        } elseif ($z == 1 && $CRITISISED) {
+            $z = 0;
+            $s = bit_icon('s', 16) . "$nyou $block поразил$male $nvs на <font class=\"bnick\" color=\"#CC0000\"><b>-$ydar</b></font> <font class=\"timef\">«cокрушительный $ud_name»</font>";
+        } elseif ($z == 1) {
+            $z = 0;
+            $s = bit_icon('t', 16) . "$nyou $block поразил$male $nvs на <b class=\"user\">-$ydar</b> <font class=\"timef\">«$ud_name»</font>";
+        }
+
+        // Эффекты специальных атак
+        if ($spd && $spd['type'] == 4 && !$blocked) {
+            $persvs['cma'] -= $spd['value'];
+            $persvs['cma'] = mtrunc($persvs['cma']);
+            $s .= "(<font class=\"ma\">-{$spd['value']} МАНЫ</font>)";
+        }
+
+        // Применение урона
+        if ($z == 0) {
+            $persvs['chp'] -= $ydar;
+            $pers['fexp'] += $ydar;
+            if (!$invvs) {
+                $s .= "<font class=\"hp_in_f\">[" . mtrunc($persvs['chp']) . "/{$persvs['hp']}]</font>";
+            }
+        }
+
+        global $MAGIC_LOG;
+        if ($MAGIC_LOG) $s = $MAGIC_LOG;
+
+        // Обработка смерти противника
+        if ($persvs['chp'] <= 0 && $z != 2) {
+            $pers['fexp'] += -$persvs['chp'];
+            $ydar += -$persvs['chp'];
+            $persvs['chp'] = 0;
+            $killCondition = ($persvs['uid'] || $persvs['bid'] < 0 || ($persvs['level'] > $pers['level'] + 1 && $persvs['rank_i'] > $pers['rank_i'] - 20 * $pers['is_art'] && rand(0, 100) < 10)) && $persvs['level'] > $pers['level'] - 2 && $fight['travm'] >= 10;
+            if ($killCondition) {
+                $die = "$nvs <b>$pogib</b> , $nyou опыт <font class=\"green\">+" . ($pers['level'] * 10) . "</font>.%$die";
+                $pers['kills']++;
+            } else {
+                $die = "$nvs <b>$pogib</b>.%$die";
+            }
+            $str = '';
+            if (!$persvs['uid']) {
+                require 'inc/inc/bots/drop.php';
+            } else {
+                require 'inc/inc/fights/travm.php';
+            }
+            $die .= $str;
+        }
+
+        // Обновление опыта и урона
+        if ($z != 2) {
+            $pers['exp_in_f'] += !$persvs['id_skin'] ? experience($ydar, $pers['level'], $persvs['level'], $persvs['uid'], $persvs['rank_i']) : experience($ydar * 0.3, $pers['level'], $persvs['level'], $persvs['uid'], $persvs['rank_i']);
+            $pers['damage_give'] = $ydar;
+        }
+        $pers['chp'] = max(0, $pers['chp']);
+
+        // Эффект вампиризма
+        global $DAY_TIME, $no_mana;
+        if (strpos($pers['aura'], 'vampire') !== false && round($ydar / 10) > 0 && !$no_mana && $pers['chp'] > 0 && $z != 2) {
+            $heal = round($ydar / ($DAY_TIME == 0 ? 9 : 10));
+            $pers['chp'] += $heal;
+            $s .= ".Вампиризм <font class=\"hp\">+$heal HP</font>";
+        }
+
+        $fall .= $s;
+
+        // Обновление данных в базе
+        if ($z != 2) {
+            if ($persvs['uid']) {
+                $stmt = $db->prepare("UPDATE users SET chp = :chp, cma = :cma" . ($en ? '' : ', refr = 1') . " WHERE uid = :uid");
+                $stmt->execute([':chp' => $persvs['chp'], ':cma' => $persvs['cma'], ':uid' => $persvs['uid']]);
+            } else {
+                $stmt = $db->prepare("UPDATE bots_battle SET chp = :chp, cma = :cma WHERE id = :id");
+                $stmt->execute([':chp' => $persvs['chp'], ':cma' => $persvs['cma'], ':id' => $persvs['id']]);
+            }
+        }
+
+        $stmt = $db->prepare("UPDATE users SET fexp = :fexp, chp = :chp, exp_in_f = :exp_in_f, damage_give = :damage_give, kills = :kills WHERE uid = :uid");
+        $stmt->execute([
+            ':fexp' => $pers['fexp'],
+            ':chp' => $pers['chp'],
+            ':exp_in_f' => $pers['exp_in_f'],
+            ':damage_give' => $pers['damage_give'],
+            ':kills' => $pers['kills'],
+            ':uid' => $pers['uid']
+        ]);
+    } else {
+        $fall = "$nyou сделал$malevs контрольный удар по трупу";
+    }
+
+    if ($fall) $fall .= '. &nbsp;';
+
+    // Обновление глобальных данных персонажей
+    global $pers, $persvs;
+    $pers = catch_user($pers['uid']);
+    if ($persvs['chp'] > 0) {
+        $persvs = $persvs['uid'] ? catch_user($persvs['uid']) : $db->query("SELECT * FROM bots_battle WHERE id = " . (int)$persvs['id'])->fetch();
+    } else {
+        $stmt = $db->prepare("SELECT * FROM users WHERE cfight = :cfight AND fteam != :fteam AND chp > 0 LIMIT 1");
+        $stmt->execute([':cfight' => $pers['cfight'], ':fteam' => $pers['fteam']]);
+        $persvs = $stmt->fetch() ?: $db->query("SELECT * FROM bots_battle WHERE cfight = " . (int)$pers['cfight'] . " AND fteam != " . (int)$pers['fteam'] . " AND chp > 0 LIMIT 1")->fetch();
+    }
+
+    return $fall;
 }
 
 function newbot_udar ($point,$_botU) {
