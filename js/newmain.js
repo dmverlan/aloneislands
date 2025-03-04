@@ -1,87 +1,80 @@
-// Установка заголовка страницы
 document.title = 'Aloneislands - Вселенная в твоих руках!';
 
-// Глобальные переменные для управления звуком
-let soundsOn = true; // Флаг включения звука
-let currentAudio = null; // Текущий аудиообъект
+const elements = {
+    errorEl: document.querySelector('.login-error'),
+    logo: document.querySelector('.logo'),
+    submitImg: document.querySelector('.submit-btn img'),
+    leftOverlay: document.querySelector('.left-overlay'),
+    rightOverlay: document.querySelector('.right-overlay'),
+    boxedLinks: document.querySelectorAll('.boxed'),
+    modal: document.getElementById('modal'),
+    iframe: document.getElementById('modal-iframe'),
+    closeModal: document.getElementById('close-modal'),
+    soundLayer: document.getElementById('sound-layer')
+};
 
-// Определяет ширину экрана и возвращает ближайшее поддерживаемое значение
+let soundsOn = true;
+let currentAudio = null;
+const soundTracks = ['title1', 'title2', 'title3'];
+
 function getScreenWidth() {
     const sw = window.innerWidth;
-    return sw < 800 ? 800 : sw > 1280 ? 1280 : [800, 1024, 1152, 1280].includes(sw) ? sw : 1024;
+    const supportedWidths = [800, 1024, 1152, 1280];
+    return sw < 800 ? 800 : sw > 1280 ? 1280 : supportedWidths.includes(sw) ? sw : 1024;
 }
 
-// Инициализирует страницу с учётом ошибки авторизации
-function index(terror) {
-    // Отображение сообщения об ошибке
-    const errorEl = document.querySelector('.login-error');
-    errorEl.textContent = terror === 'login' ? 'Неверный логин или пароль.' :
-                         terror === 'block' ? 'Персонаж заблокирован.' : 'Войти в игру:';
+function initPage(error) {
+    const errorMessages = {
+        login: 'Неверный логин или пароль.',
+        block: 'Персонаж заблокирован.',
+        default: 'Войти в игру:'
+    };
+    elements.errorEl.textContent = errorMessages[error] || errorMessages.default;
 
-    // Установка изображений в зависимости от ширины экрана
     const sw = getScreenWidth();
-    document.querySelector('.logo').src = `index/${sw}/logo2.png`;
-    document.querySelector('.submit-btn img').src = `index/${sw}/v.png`;
-    document.querySelector('.left-overlay').style.backgroundImage = `url('index/${sw}/m.png')`;
-    document.querySelector('.right-overlay').style.backgroundImage = `url('index/${sw}/d.png')`;
+    elements.logo.src = `index/${sw}/logo2.png`;
+    elements.submitImg.src = `index/${sw}/v.png`;
+    elements.leftOverlay.style.backgroundImage = `url('index/${sw}/m.png')`;
+    elements.rightOverlay.style.backgroundImage = `url('index/${sw}/d.png')`;
 
-    // Обработка кликов по ссылкам для открытия модального окна
-    document.querySelectorAll('.boxed').forEach(link => {
+    elements.boxedLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            const modal = document.getElementById('modal');
-            const iframe = document.getElementById('modal-iframe');
-            iframe.src = link.href;
-            modal.showModal();
+            elements.iframe.src = link.href;
+            elements.modal.showModal();
         });
     });
 }
 
-// Воспроизводит случайный звуковой трек
-function playSound(track) {
-    if (!soundsOn || currentAudio) return;
+function playSound() {
+    if (!soundsOn || currentAudio || !window.Audio) return;
+    const track = soundTracks[Math.floor(Math.random() * soundTracks.length)];
     currentAudio = new Audio(`sounds/${track}.mp3`);
-    currentAudio.volume = 0.5; // Громкость 50%
-    currentAudio.loop = true; // Зацикливание
-    currentAudio.play();
+    currentAudio.volume = 0.5;
+    currentAudio.loop = true;
+    currentAudio.play().catch(err => console.error('Ошибка воспроизведения звука:', err));
 }
 
-// Приостанавливает воспроизведение звука
 function pauseSound() {
     if (currentAudio) currentAudio.pause();
 }
 
-// Возобновляет воспроизведение звука
 function resumeSound() {
-    if (!currentAudio) playSound(`title${Math.floor(Math.random() * 3) + 1}`);
-    else currentAudio.play();
+    if (!currentAudio) playSound();
+    else currentAudio.play().catch(err => console.error('Ошибка возобновления звука:', err));
 }
 
-// Переключает состояние звука (вкл/выкл)
 function toggleSound() {
-    const soundLayer = document.getElementById('sound-layer');
     soundsOn = !soundsOn;
-    soundLayer.innerHTML = soundsOn ?
-        '<div class="sound-control" onclick="toggleSound()"><img src="images/icon_eq.gif"><i>Music ON</i></div>' :
-        '<div class="sound-control" onclick="toggleSound()"><img src="images/paused.gif"><i>Music OFF</i></div>';
+    elements.soundLayer.innerHTML = soundsOn ?
+        '<div class="sound-control" onclick="toggleSound()"><img src="images/icon_eq.gif" alt="Вкл"><i>Music ON</i></div>' :
+        '<div class="sound-control" onclick="toggleSound()"><img src="images/paused.gif" alt="Выкл"><i>Music OFF</i></div>';
     soundsOn ? resumeSound() : pauseSound();
 }
 
-// Инициализация страницы после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
-    // Обработка ошибки из URL
-    index(new URLSearchParams(window.location.search).get('error') || '');
-    // Запуск управления звуком
+    const urlParams = new URLSearchParams(window.location.search);
+    initPage(urlParams.get('error') || '');
     toggleSound();
-    // Закрытие модального окна
-    document.getElementById('close-modal').addEventListener('click', () => {
-        document.getElementById('modal').close();
-    });
+    elements.closeModal.addEventListener('click', () => elements.modal.close());
 });
-
-// Сохраняет логин и пароль в cookies и перенаправляет на game.php
-function enter(login, pass) {
-    createCookie("uid", login, 7); // 7 дней по умолчанию
-    createCookie("hashcode", pass, 7);
-    window.location = 'game.php';
-}

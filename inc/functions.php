@@ -2645,4 +2645,77 @@ function sanitizeInput($data) {
     }
     return htmlspecialchars(trim(str_replace(["'", "\\"], '', $data)), ENT_QUOTES, 'UTF-8');
 }
+
+// Добавляем в конец functions.php
+
+/**
+ * Проверяет текущую погоду в игровом мире
+ * @param PDO $db Подключение к базе данных
+ * @param int $currentTime Текущее время
+ * @return array Данные о погоде
+ */
+function checkWorldWeather($db, $currentTime) {
+    static $world = null;
+    if ($world === null) {
+        $stmt = $db->query("SELECT weather, weatherchange FROM world LIMIT 1");
+        $world = $stmt->fetch();
+    }
+    return $world;
+}
+
+/**
+ * Обновляет погоду в игровом мире, если время смены истекло
+ * @param PDO $db Подключение к базе данных
+ * @param int $currentTime Текущее время
+ * @param int $seasonId ID текущего сезона
+ * @return array Обновлённые данные о погоде
+ */
+function updateWorldWeather($db, $currentTime, $seasonId) {
+    $world = checkWorldWeather($db, $currentTime);
+    if ($world['weatherchange'] < $currentTime) {
+        $stmt = $db->prepare("SELECT * FROM weather WHERE season = 5 OR season = :season ORDER BY RAND() LIMIT 1");
+        $stmt->execute([':season' => $seasonId]);
+        $newWeather = $stmt->fetch();
+
+        $weatherChange = $currentTime + rand(1, 3) * $newWeather['time'];
+        $stmt = $db->prepare("UPDATE world SET weather = :weather, weatherchange = :changeTime");
+        $stmt->execute([':weather' => $newWeather['id'], ':changeTime' => $weatherChange]);
+
+        say_to_chat('a', 'Произошла смена погоды.', 0, '', '*');
+        $db->exec("UPDATE nature SET fish_population = fish_population + fish_population * 0.5 + " . rand(0, 100) . " WHERE fishing > 0 AND fish_population < 600");
+
+        return ['weather' => $newWeather['id'], 'weatherchange' => $weatherChange];
+    }
+    return $world;
+}
+
+/**
+ * Определяет текущий сезон и время до его смены
+ * @param int $currentTime Текущее время
+ * @return array Данные о сезоне (id, name, changes)
+ */
+function getSeasonData($currentTime) {
+    $month = (int)date('m', $currentTime);
+    $year = (int)date('Y', $currentTime);
+
+    $seasons = [
+        1 => ['name' => 'Зима', 'start' => [12, 1], 'end' => [3, 1]],
+        2 => ['name' => 'Весна', 'start' => [3, 1], 'end' => [6, 1]],
+        3 => ['name' => 'Лето', 'start' => [6, 1], 'end' => [9, 1]],
+        4 => ['name' => 'Осень', 'start' => [9, 1], 'end' => [12, 1]]
+    ];
+
+    foreach ($seasons as $id => $season) {
+        $startTime = mktime(0, 0, 0, $season['start'][0], $season['start'][1], $year + ($month >= 12 && $season['start'][0] == 12 ? 0 : ($month < $season['start'][0] ? -1 : 0)));
+        $endTime = mktime(0, 0, 0, $season['end'][0], $season['end'][1], $year + ($month >= 12 && $season['end'][0] == 12 ? 1 : 0));
+        if ($currentTime >= $startTime && $currentTime < $endTime) {
+            return [
+                'id' => $id,
+                'name' => $season['name'],
+                'changes' => tp($endTime - $currentTime)
+            ];
+        }
+    }
+    return ['id' => 1, 'name' => 'Зима', 'changes' => 'НЕИЗВЕСТНО'];
+}
 ?>

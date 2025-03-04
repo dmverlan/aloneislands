@@ -12,6 +12,10 @@ require_once 'inc/sendmail.php';
 require_once 'configs/config.php';
 require_once 'db.php';
 
+define('COOKIE_LIFETIME_DAYS', 30);
+define('DUMP_INTERVAL_SECONDS', 86400);
+define('CSRF_TOKEN_LIFETIME_SECONDS', 3600);
+
 session_start();
 
 $_POST = sanitizeInput($_POST);
@@ -22,18 +26,6 @@ $db = getDatabaseConnection();
 
 $currentTime = time();
 $night = ($currentTime >= mktime(6, 0, 0) && $currentTime < mktime(22, 0, 0)) ? 0 : 1;
-
-function checkWorldWeather($db, $currentTime) {
-    static $world = null;
-    if ($world === null) {
-        $stmt = $db->query("SELECT weather, weatherchange FROM world LIMIT 1");
-        $world = $stmt->fetch();
-    }
-    if ($world && $world['weatherchange'] < $currentTime) {
-        say_to_chat("#W", "#W", 0, '', '*');
-    }
-    return $world;
-}
 
 function authenticateUser($db) {
     global $pers;
@@ -66,18 +58,24 @@ function updateOldPassword($db, &$pers, $password) {
     return false;
 }
 
-function generateCsrfToken() {
-    if (empty($_SESSION['csrf_token'])) $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+function generateCsrfToken($currentTime) {
+    if (empty($_SESSION['csrf_token']) || empty($_SESSION['csrf_time']) || $_SESSION['csrf_time'] < $currentTime - CSRF_TOKEN_LIFETIME_SECONDS) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        $_SESSION['csrf_time'] = $currentTime;
+    }
     return $_SESSION['csrf_token'];
 }
 
-function verifyCsrfToken($token) {
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+function verifyCsrfToken($token, $currentTime) {
+    return isset($_SESSION['csrf_token']) && 
+           isset($_SESSION['csrf_time']) && 
+           $_SESSION['csrf_time'] >= $currentTime - CSRF_TOKEN_LIFETIME_SECONDS && 
+           hash_equals($_SESSION['csrf_token'], $token);
 }
 
 $pers = null;
 $err = 1;
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf'] ?? '')) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verifyCsrfToken($_POST['csrf'] ?? '', $currentTime)) {
     $err = 3;
 } elseif (authenticateUser($db)) {
     $err = 0;
@@ -108,7 +106,7 @@ define('SPASS', $pers['flash_pass']);
 
 function updateUserSession($db, $pers, $currentTime) {
     try {
-        $cookieLifetime = $currentTime + 30 * 24 * 3600;
+        $cookieLifetime = $currentTime + COOKIE_LIFETIME_DAYS * 24 * 3600;
         foreach (['uid' => $pers['uid'], 'hashcode' => $pers['pass'], 'nick' => $pers['user'], 'options' => $pers['options'], 'spass' => $pers['flash_pass']] as $name => $value) {
             setcookie($name, $value, $cookieLifetime, '/');
         }
@@ -162,11 +160,11 @@ function optimizeDatabase($db, $night, $currentTime) {
     if ($configs['last_dump'] < $currentTime) {
         say_to_chat('a', "Внимание! Игра приостановит свою работу на малый срок. Оптимизация и сохранение параметров...", 0, 0, '*', 0);
         $stmt = $db->prepare("UPDATE configs SET last_dump = :time");
-        $stmt->execute([':time' => $currentTime + 86400]);
+        $stmt->execute([':time' => $currentTime + DUMP_INTERVAL_SECONDS]);
         $db->exec("OPTIMIZE TABLE users, wp, chars, mine, bots_cell, herbals_cell, bots, weapons, chat");
         $db->exec("TRUNCATE TABLE bots_battle, chat, salings");
         $db->exec("UPDATE users SET chat_last_id = 0");
-        $configs['last_dump'] = $currentTime + 86400;
+        $configs['last_dump'] = $currentTime + DUMP_INTERVAL_SECONDS;
     }
 }
 
@@ -186,13 +184,16 @@ function celebrateBirthday($db, $pers, $currentTime) {
     $stmt->execute([':bonus' => $bonus, ':time' => mktime(0, 0, 0, $drMonth, $drDay, $year + 1), ':uid' => $pers['uid']]);
 }
 
-$world = checkWorldWeather($db, $currentTime);
+// Используем интегрированные функции погоды из functions.php
+$seasonData = getSeasonData($currentTime);
+$world = updateWorldWeather($db, $currentTime, $seasonData['id']);
+
 updateUserSession($db, $pers, $currentTime);
 welcomeNewPlayer($db, $pers, $currentTime);
 optimizeDatabase($db, $night, $currentTime);
 celebrateBirthday($db, $pers, $currentTime);
 
-$csrfToken = generateCsrfToken();
+$csrfToken = generateCsrfToken($currentTime);
 
 register_shutdown_function(function() use ($db) {
     global $chatBuffer;

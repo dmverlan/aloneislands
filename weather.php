@@ -1,125 +1,107 @@
-<?
-	include("inc/functions.php");
-	include ("configs/config.php");
-	$res = mysql_connect ($mysqlhost,$mysqluser,$mysqlpass,$mysqlbase);
-	mysql_select_db($mysqlbase, $res);
+<?php
+defined('ACCESS') or define('ACCESS', true) or die('Access denied');
 
-	function Play($a,$b)	
-	{
-		if (date("H")>21 or date("H")<7)
-			echo "<script>top.Play".$a."('".$b."',1);</script>";
-		else
-			echo "<script>top.Play".$a."('".$b."');</script>";
-	}
-	$weather = sqla("SELECT weather,weatherchange FROM world");
-	$ww = sqla("SELECT * FROM weather WHERE id=".$weather["weather"]."");
-	
-	if (date("m")>11 or date("m")<3) 
-	{
-		$season_name = "Зима";
-		$season_id = 1;
-		if (date("m")==12)
-		$changes = tp(mktime(0,0,0,3,1,date("Y")+1) - time());
-		else
-		$changes = tp(mktime(0,0,0,3,1,date("Y")) - time());
-	}elseif (date("m")>2 and date("m")<6) 
-	{
-		$season_name = "Весна";
-		$season_id = 2;
-		$changes = tp(mktime(0,0,0,6,1,date("Y")) - time());
-	}elseif (date("m")>5 and date("m")<9) 
-	{
-		$season_name = "Лето";
-		$season_id = 3;
-		$changes = tp(mktime(0,0,0,9,1,date("Y")) - time());
-	}elseif (date("m")>8 and date("m")<12) 
-	{
-		$season_name = "Осень";
-		$season_id = 4;
-		$changes = tp(mktime(0,0,0,12,1,date("Y")) - time());
-	}
-	$changew  = 'НЕИЗВЕСТНО';
-	if ($weather['weatherchange']>time())
-	$changew = tp($weather['weatherchange']-time());
-	else
-	{
-		$ww = sqla("SELECT * FROM weather WHERE season=5 or season=".$season_id." ORDER BY RAND()");
-		$weather['weatherchange'] = time() + rand(1,3)*$ww["time"];
-		$changew = tp($weather['weatherchange']-time());
-		sql("UPDATE world SET weather = ".$ww["id"].", weatherchange = ".$weather["weatherchange"]."");
-		say_to_chat("a","Произошла смена погоды.",0,'','*');
-		sql("UPDATE nature SET fish_population=fish_population+fish_population*0.5+".rand(0,100)." WHERE fishing>0 and fish_population<600");
-	}
-	/*
-	$w = $weather["weather"];
-	if ($w == 1)
-	{
-		Play("Summer","hot");
-	}
-	if ($w == 2)
-	{
-		Play("Summer","rain");
-	}
-	if ($w == 3)
-	{
-		Play("Summer","hrain");
-	}
-	if ($w == 4)
-	{
-		Play("Summer","wind");
-	}
-	if ($w == 5)
-	{
-		Play("Summer","storm");
-	}
-	if ($w == 6)
-	{
-		Play("Summer","fog");
-	}
-	if ($w == 7)
-	{
-		Play("Summer","gsnow");
-	}
-	if ($w == 8)
-	{
-		Play("Summer","snow");
-	}
-	
-	*/
-	if (date("H")>21 or date("H")<7) $ww["id"]+=10;
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ALL);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/logs/error.log');
+
+require_once 'inc/functions.php';
+require_once 'configs/config.php';
+require_once 'db.php';
+
+define('WEATHER_REDIRECT_DELAY', 15); // Секунды до редиректа
+
+$db = getDatabaseConnection();
+$currentTime = time();
+
+// Проверяем и обновляем погоду (адаптация из game.php)
+function checkWorldWeather($db, $currentTime) {
+    static $world = null;
+    if ($world === null) {
+        $stmt = $db->query("SELECT weather, weatherchange FROM world LIMIT 1");
+        $world = $stmt->fetch();
+    }
+    return $world;
+}
+
+function updateWorldWeather($db, $currentTime, $seasonId) {
+    $world = checkWorldWeather($db, $currentTime);
+    if ($world['weatherchange'] < $currentTime) {
+        $stmt = $db->prepare("SELECT * FROM weather WHERE season = 5 OR season = :season ORDER BY RAND() LIMIT 1");
+        $stmt->execute([':season' => $seasonId]);
+        $newWeather = $stmt->fetch();
+
+        $weatherChange = $currentTime + rand(1, 3) * $newWeather['time'];
+        $stmt = $db->prepare("UPDATE world SET weather = :weather, weatherchange = :changeTime");
+        $stmt->execute([':weather' => $newWeather['id'], ':changeTime' => $weatherChange]);
+
+        say_to_chat('a', 'Произошла смена погоды.', 0, '', '*');
+        $db->exec("UPDATE nature SET fish_population = fish_population + fish_population * 0.5 + " . rand(0, 100) . " WHERE fishing > 0 AND fish_population < 600");
+
+        return ['weather' => $newWeather['id'], 'weatherchange' => $weatherChange];
+    }
+    return $world;
+}
+
+// Определяем сезон
+function getSeasonData($currentTime) {
+    $month = (int)date('m', $currentTime);
+    $year = (int)date('Y', $currentTime);
+
+    $seasons = [
+        1 => ['name' => 'Зима', 'start' => [12, 1], 'end' => [3, 1]],
+        2 => ['name' => 'Весна', 'start' => [3, 1], 'end' => [6, 1]],
+        3 => ['name' => 'Лето', 'start' => [6, 1], 'end' => [9, 1]],
+        4 => ['name' => 'Осень', 'start' => [9, 1], 'end' => [12, 1]]
+    ];
+
+    foreach ($seasons as $id => $season) {
+        $startTime = mktime(0, 0, 0, $season['start'][0], $season['start'][1], $year + ($month >= 12 && $season['start'][0] == 12 ? 0 : ($month < $season['start'][0] ? -1 : 0)));
+        $endTime = mktime(0, 0, 0, $season['end'][0], $season['end'][1], $year + ($month >= 12 && $season['end'][0] == 12 ? 1 : 0));
+        if ($currentTime >= $startTime && $currentTime < $endTime) {
+            return [
+                'id' => $id,
+                'name' => $season['name'],
+                'changes' => tp($endTime - $currentTime)
+            ];
+        }
+    }
+    return ['id' => 1, 'name' => 'Зима', 'changes' => 'НЕИЗВЕСТНО']; // По умолчанию
+}
+
+// Генерация JavaScript для звука
+function generatePlayScript($weatherId) {
+    $hour = (int)date('H');
+    $isNight = $hour > 21 || $hour < 7;
+    $weatherMap = [
+        1 => ['season' => 'Summer', 'type' => 'hot'],
+        2 => ['season' => 'Summer', 'type' => 'rain'],
+        3 => ['season' => 'Summer', 'type' => 'hrain'],
+        4 => ['season' => 'Summer', 'type' => 'wind'],
+        5 => ['season' => 'Summer', 'type' => 'storm'],
+        6 => ['season' => 'Summer', 'type' => 'fog'],
+        7 => ['season' => 'Summer', 'type' => 'gsnow'],
+        8 => ['season' => 'Summer', 'type' => 'snow']
+    ];
+    if (isset($weatherMap[$weatherId])) {
+        $params = $isNight ? "'{$weatherMap[$weatherId]['type']}', 1" : "'{$weatherMap[$weatherId]['type']}'";
+        return "<script>top.Play{$weatherMap[$weatherId]['season']}($params);</script>";
+    }
+    return '';
+}
+
+// Основная логика
+$seasonData = getSeasonData($currentTime);
+$worldWeather = updateWorldWeather($db, $currentTime, $seasonData['id']);
+$weatherData = $db->prepare("SELECT * FROM weather WHERE id = :id");
+$weatherData->execute([':id' => $worldWeather['weather']]);
+$weather = $weatherData->fetch();
+
+$weatherChangeTime = tp($worldWeather['weatherchange'] - $currentTime);
+$weatherId = ($hour > 21 || $hour < 7) ? $weather['id'] + 10 : $weather['id'];
+$playScript = generatePlayScript($weather['id']);
+
+require 'templates/weather_template.php';
 ?>
-<META HTTP-EQUIV="Page-Enter" CONTENT="BlendTrans(Duration=0.5)">
-<LINK href="css/main.css" rel=STYLESHEET type=text/css>
-<body style="background-color:transparent;">
-<center>
-<br>
-<br>
-<table border="0" width="95%" cellspacing="0" cellpadding="0" style="border-bottom-style: solid; border-top-style: solid; border-top-width: 3px; border-bottom-width: 2px; border-color:#777799" >
-	<tr>
-		<td align="center" valign="bottom"></td>
-		<td align="center"><a href=ch.php class=bga>НАЗАД</a></td>
-		<td align="center" valign="bottom"></td>
-	</tr>
-	<tr>
-		<td align="center" class="bnick" height="21">&nbsp;</td>
-		<td align="center" class="dark" height="21"><b class=user><?= $ww["name"]; ?></b>[<?= $changew; ?>]<br>
-		<img border="0" src="images/weather/seasons/<?=$season_id;?>.gif" width="100" height="100"><img border="0" src="images/weather/<?= $ww["id"]; ?>.gif" width="100" height="100"><br><?= str_replace(';','<br>',$ww["describe"]); ?></td>
-		<td align="center" class="bnick" height="21">&nbsp;</td>
-	</tr>
-	<tr>
-		<td align="center" bgcolor="#AAAAAA" height=4></td>
-		<td align="center" bgcolor="#AAAAAA" height=4></td>
-		<td align="center" bgcolor="#AAAAAA" height=4></td>
-	</tr>
-	<tr>
-		<td align="center" class="bnick" valign="top"></td>
-		<td align="center" class="about"><b class=user><?=$season_name;?></b>[<?=$changes?>]<br>
-		</td>
-		<td align="center" class="bnick" valign="top"></td>
-	</tr>
-</table>
-</center>
-<script>
-var interv = setTimeout("location = 'ch.php?rand="+Math.random()+"'",15000);
-</script>
-</body>
