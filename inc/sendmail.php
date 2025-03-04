@@ -20,20 +20,11 @@ require_once 'vendor/autoload.php'; // Если используется Compose
  * @param string $subject Тема письма (по умолчанию "Заполнена форма на сайте")
  * @return bool Успешность отправки
  */
-function send_mail($to, $body, $from, $subject = 'Заполнена форма на сайте') {
-    // Валидация входных данных
-    if (!filter_var($to, FILTER_VALIDATE_EMAIL)) {
-        error_log("Некорректный адрес получателя: $to");
-        return false;
-    }
-    if (!filter_var($from, FILTER_VALIDATE_EMAIL)) {
-        error_log("Некорректный адрес отправителя: $from");
-        return false;
-    }
-    if (empty($body)) {
-        error_log("Пустое тело письма");
-        return false;
-    }
+function send_mail($to, $subject, $message, $from) {
+    $headers = "From: $from\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n";
+    $command = "echo \"$message\" | msmtp --from=$from $to";
+    exec($command);
+}
 
     // Создаем экземпляр PHPMailer
     $mail = new PHPMailer(true);
